@@ -21,6 +21,7 @@ PLATFORM_PATH := device/sony/yoshino-common
 
 PRODUCT_SOONG_NAMESPACES += \
     $(PLATFORM_PATH) \
+    hardware/google/interfaces \
     hardware/google/pixel
 
 # For android_filesystem_config.h permissions
