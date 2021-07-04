@@ -134,15 +134,6 @@ PRODUCT_PACKAGES += \
     libqti_vndfwk_detect \
     libqti_vndfwk_detect.vendor
 
-### WIFI DISPLAY
-PRODUCT_PACKAGES += \
-    libaacwrapper \
-    libnl \
-    libmediaextractorservice
-
-PRODUCT_BOOT_JARS += \
-    WfdCommon
-
 ## IAshmemDeviceService
 PRODUCT_PACKAGES += libashmemd_client
 
