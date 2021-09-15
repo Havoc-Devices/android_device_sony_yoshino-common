@@ -18,41 +18,43 @@
  */
 
 #include "glengine.h"
+
 #include <log/log.h>
+
 #include "engine.h"
 
 void checkGlError(const char *, int);
 void checkEglError(const char *, int);
 
 class EngineContext {
-    public:
-    EGLDisplay eglDisplay;
-    EGLContext eglContext;
-    EGLSurface eglSurface;
-    EngineContext()
-    {
-        eglDisplay = EGL_NO_DISPLAY;
-        eglContext = EGL_NO_CONTEXT;
-        eglSurface = EGL_NO_SURFACE;
-    }
+ public:
+  EGLDisplay eglDisplay;
+  EGLContext eglContext;
+  EGLSurface eglSurface;
+  EngineContext() {
+    eglDisplay = EGL_NO_DISPLAY;
+    eglContext = EGL_NO_CONTEXT;
+    eglSurface = EGL_NO_SURFACE;
+  }
 };
 
 //-----------------------------------------------------------------------------
 // Make Current
-void engine_bind(void* context)
+void engine_bind(void *context)
 //-----------------------------------------------------------------------------
 {
-  EngineContext* engineContext = (EngineContext*)(context);
-  EGL(eglMakeCurrent(engineContext->eglDisplay, engineContext->eglSurface, engineContext->eglSurface, engineContext->eglContext));
+  EngineContext *engineContext = (EngineContext *)(context);
+  EGL(eglMakeCurrent(engineContext->eglDisplay, engineContext->eglSurface,
+                     engineContext->eglSurface, engineContext->eglContext));
 }
 
 //-----------------------------------------------------------------------------
 // initialize GL
 //
-void* engine_initialize(bool isSecure)
+void *engine_initialize(bool isSecure)
 //-----------------------------------------------------------------------------
 {
-  EngineContext* engineContext = new EngineContext();
+  EngineContext *engineContext = new EngineContext();
 
   // display
   engineContext->eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
@@ -75,31 +77,35 @@ void* engine_initialize(bool isSecure)
   // context
   EGLint eglContextAttribList[] = {EGL_CONTEXT_CLIENT_VERSION, 3,
                                    isSecure ? EGL_PROTECTED_CONTENT_EXT : EGL_NONE,
-                                   isSecure ? EGL_TRUE : EGL_NONE,
-                                   EGL_NONE};
-  engineContext->eglContext = eglCreateContext(engineContext->eglDisplay, eglConfig, NULL, eglContextAttribList);
+                                   isSecure ? EGL_TRUE : EGL_NONE, EGL_NONE};
+  engineContext->eglContext =
+      eglCreateContext(engineContext->eglDisplay, eglConfig, NULL, eglContextAttribList);
 
   // surface
-  EGLint eglSurfaceAttribList[] = {EGL_WIDTH, 1,
-                                   EGL_HEIGHT, 1,
+  EGLint eglSurfaceAttribList[] = {EGL_WIDTH,
+                                   1,
+                                   EGL_HEIGHT,
+                                   1,
                                    isSecure ? EGL_PROTECTED_CONTENT_EXT : EGL_NONE,
                                    isSecure ? EGL_TRUE : EGL_NONE,
                                    EGL_NONE};
-  engineContext->eglSurface = eglCreatePbufferSurface(engineContext->eglDisplay, eglConfig, eglSurfaceAttribList);
+  engineContext->eglSurface =
+      eglCreatePbufferSurface(engineContext->eglDisplay, eglConfig, eglSurfaceAttribList);
 
-  eglMakeCurrent(engineContext->eglDisplay, engineContext->eglSurface, engineContext->eglSurface, engineContext->eglContext);
+  eglMakeCurrent(engineContext->eglDisplay, engineContext->eglSurface, engineContext->eglSurface,
+                 engineContext->eglContext);
 
   ALOGI("In %s context = %p", __FUNCTION__, (void *)(engineContext->eglContext));
 
-  return (void*)(engineContext);
+  return (void *)(engineContext);
 }
 
 //-----------------------------------------------------------------------------
 // Shutdown.
-void engine_shutdown(void* context)
+void engine_shutdown(void *context)
 //-----------------------------------------------------------------------------
 {
-  EngineContext* engineContext = (EngineContext*)context;
+  EngineContext *engineContext = (EngineContext *)context;
   EGL(eglMakeCurrent(engineContext->eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT));
   EGL(eglDestroySurface(engineContext->eglDisplay, engineContext->eglSurface));
   EGL(eglDestroyContext(engineContext->eglDisplay, engineContext->eglContext));
@@ -128,10 +134,10 @@ void engine_deleteProgram(unsigned int id)
 }
 
 //-----------------------------------------------------------------------------
-void engine_setData2f(int location, float* data)
+void engine_setData2f(int location, float *data)
 //-----------------------------------------------------------------------------
 {
-    GL(glUniform2f(location, data[0], data[1]));
+  GL(glUniform2f(location, data[0], data[1]));
 }
 
 //-----------------------------------------------------------------------------
@@ -223,7 +229,8 @@ void WaitOnNativeFence(int fd)
   if (fd != -1) {
     EGLint attribs[] = {EGL_SYNC_NATIVE_FENCE_FD_ANDROID, fd, EGL_NONE};
 
-    EGLSyncKHR sync = eglCreateSyncKHR(eglGetCurrentDisplay(), EGL_SYNC_NATIVE_FENCE_ANDROID, attribs);
+    EGLSyncKHR sync =
+        eglCreateSyncKHR(eglGetCurrentDisplay(), EGL_SYNC_NATIVE_FENCE_ANDROID, attribs);
 
     if (sync == EGL_NO_SYNC_KHR) {
       ALOGE("%s - Failed to Create sync from source fd", __FUNCTION__);
@@ -314,102 +321,84 @@ int engine_blit(int srcFenceFd)
 void checkGlError(const char *file, int line)
 //-----------------------------------------------------------------------------
 {
-  for (GLint error = glGetError(); error; error = glGetError()) {
-    char *pError;
+  for (GLint error = glGetError(); error != GL_NO_ERROR; error = glGetError()) {
+    const char *pError = "<unknown error>";
     switch (error) {
-      case GL_NO_ERROR:
-        pError = (char *)"GL_NO_ERROR";
-        break;
       case GL_INVALID_ENUM:
-        pError = (char *)"GL_INVALID_ENUM";
+        pError = "GL_INVALID_ENUM";
         break;
       case GL_INVALID_VALUE:
-        pError = (char *)"GL_INVALID_VALUE";
+        pError = "GL_INVALID_VALUE";
         break;
       case GL_INVALID_OPERATION:
-        pError = (char *)"GL_INVALID_OPERATION";
+        pError = "GL_INVALID_OPERATION";
         break;
       case GL_OUT_OF_MEMORY:
-        pError = (char *)"GL_OUT_OF_MEMORY";
+        pError = "GL_OUT_OF_MEMORY";
         break;
       case GL_INVALID_FRAMEBUFFER_OPERATION:
-        pError = (char *)"GL_INVALID_FRAMEBUFFER_OPERATION";
+        pError = "GL_INVALID_FRAMEBUFFER_OPERATION";
         break;
-
-      default:
-        ALOGE("glError (0x%x) %s:%d\n", error, file, line);
-        return;
     }
 
-    ALOGE("glError (%s) %s:%d\n", pError, file, line);
-    return;
+    ALOGE("glError %d (%s) %s:%d\n", error, pError, file, line);
   }
-  return;
 }
 
 //-----------------------------------------------------------------------------
 void checkEglError(const char *file, int line)
 //-----------------------------------------------------------------------------
 {
-  for (int i = 0; i < 5; i++) {
-    const EGLint error = eglGetError();
-    if (error == EGL_SUCCESS) {
-      break;
-    }
-
-    char *pError;
-    switch (error) {
-      case EGL_SUCCESS:
-        pError = (char *)"EGL_SUCCESS";
-        break;
-      case EGL_NOT_INITIALIZED:
-        pError = (char *)"EGL_NOT_INITIALIZED";
-        break;
-      case EGL_BAD_ACCESS:
-        pError = (char *)"EGL_BAD_ACCESS";
-        break;
-      case EGL_BAD_ALLOC:
-        pError = (char *)"EGL_BAD_ALLOC";
-        break;
-      case EGL_BAD_ATTRIBUTE:
-        pError = (char *)"EGL_BAD_ATTRIBUTE";
-        break;
-      case EGL_BAD_CONTEXT:
-        pError = (char *)"EGL_BAD_CONTEXT";
-        break;
-      case EGL_BAD_CONFIG:
-        pError = (char *)"EGL_BAD_CONFIG";
-        break;
-      case EGL_BAD_CURRENT_SURFACE:
-        pError = (char *)"EGL_BAD_CURRENT_SURFACE";
-        break;
-      case EGL_BAD_DISPLAY:
-        pError = (char *)"EGL_BAD_DISPLAY";
-        break;
-      case EGL_BAD_SURFACE:
-        pError = (char *)"EGL_BAD_SURFACE";
-        break;
-      case EGL_BAD_MATCH:
-        pError = (char *)"EGL_BAD_MATCH";
-        break;
-      case EGL_BAD_PARAMETER:
-        pError = (char *)"EGL_BAD_PARAMETER";
-        break;
-      case EGL_BAD_NATIVE_PIXMAP:
-        pError = (char *)"EGL_BAD_NATIVE_PIXMAP";
-        break;
-      case EGL_BAD_NATIVE_WINDOW:
-        pError = (char *)"EGL_BAD_NATIVE_WINDOW";
-        break;
-      case EGL_CONTEXT_LOST:
-        pError = (char *)"EGL_CONTEXT_LOST";
-        break;
-      default:
-        ALOGE("eglError (0x%x) %s:%d\n", error, file, line);
-        return;
-    }
-    ALOGE("eglError (%s) %s:%d\n", pError, file, line);
+  const EGLint error = eglGetError();
+  if (error == EGL_SUCCESS) {
     return;
   }
-  return;
+
+  const char *pError = "<unknown error>";
+  switch (error) {
+    case EGL_NOT_INITIALIZED:
+      pError = "EGL_NOT_INITIALIZED";
+      break;
+    case EGL_BAD_ACCESS:
+      pError = "EGL_BAD_ACCESS";
+      break;
+    case EGL_BAD_ALLOC:
+      pError = "EGL_BAD_ALLOC";
+      break;
+    case EGL_BAD_ATTRIBUTE:
+      pError = "EGL_BAD_ATTRIBUTE";
+      break;
+    case EGL_BAD_CONTEXT:
+      pError = "EGL_BAD_CONTEXT";
+      break;
+    case EGL_BAD_CONFIG:
+      pError = "EGL_BAD_CONFIG";
+      break;
+    case EGL_BAD_CURRENT_SURFACE:
+      pError = "EGL_BAD_CURRENT_SURFACE";
+      break;
+    case EGL_BAD_DISPLAY:
+      pError = "EGL_BAD_DISPLAY";
+      break;
+    case EGL_BAD_SURFACE:
+      pError = "EGL_BAD_SURFACE";
+      break;
+    case EGL_BAD_MATCH:
+      pError = "EGL_BAD_MATCH";
+      break;
+    case EGL_BAD_PARAMETER:
+      pError = "EGL_BAD_PARAMETER";
+      break;
+    case EGL_BAD_NATIVE_PIXMAP:
+      pError = "EGL_BAD_NATIVE_PIXMAP";
+      break;
+    case EGL_BAD_NATIVE_WINDOW:
+      pError = "EGL_BAD_NATIVE_WINDOW";
+      break;
+    case EGL_CONTEXT_LOST:
+      pError = "EGL_CONTEXT_LOST";
+      break;
+  }
+
+  ALOGE("eglError %d (%s) %s:%d\n", error, pError, file, line);
 }
