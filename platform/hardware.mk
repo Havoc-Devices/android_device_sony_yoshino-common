@@ -24,10 +24,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     audio.bluetooth.default
 
-### CAMERA
-PRODUCT_PACKAGES += \
-    Snap
-
 ### CARRIERCONFIG
 PRODUCT_PACKAGES += \
     CarrierConfigOverlay
