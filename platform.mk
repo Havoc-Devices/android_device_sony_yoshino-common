@@ -43,6 +43,9 @@ PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += \
 PRODUCT_COPY_FILES += \
     $(PLATFORM_PATH)/config/public.libraries.txt:$(TARGET_COPY_OUT_VENDOR)/etc/public.libraries.txt
 
+### DEX PREOPT
+PRODUCT_BROKEN_VERIFY_USES_LIBRARIES := true
+
 ### RECOVERY
 include $(PLATFORM_PATH)/platform/*.mk
 
