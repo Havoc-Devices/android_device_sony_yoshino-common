@@ -72,6 +72,10 @@ TARGET_USERIMAGES_USE_EXT4 := true
 ### POWER
 TARGET_USE_CUSTOM_POWERHINT ?= FALSE
 
+# Build vendor.img
+BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
+TARGET_COPY_OUT_VENDOR := vendor
+
 ### DEXPREOPT
 # Enable dexpreopt for everything to speed boot time
 ifeq ($(HOST_OS),linux)
@@ -109,6 +113,7 @@ TARGET_FS_CONFIG_GEN := \
 TARGET_USES_ION := true
 
 ### HIDL
+BOARD_VNDK_VERSION := current
 DEVICE_FRAMEWORK_MANIFEST_FILE := $(PLATFORM_PATH)/framework_manifest.xml
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := $(PLATFORM_PATH)/device_framework_manifest.xml
 DEVICE_MANIFEST_FILE := $(PLATFORM_PATH)/manifest.xml
