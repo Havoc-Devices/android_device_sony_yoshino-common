@@ -19,6 +19,9 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 
 PLATFORM_PATH := device/sony/yoshino-common
 
+### PROPRIETARY VENDOR FILES
+$(call inherit-product, vendor/sony/yoshino-common/yoshino-common-vendor.mk)
+
 PRODUCT_SOONG_NAMESPACES += \
     $(PLATFORM_PATH) \
     hardware/google/interfaces \
