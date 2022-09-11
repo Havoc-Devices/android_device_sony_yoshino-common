@@ -13,7 +13,6 @@
 # limitations under the License.
 
 ### AUDIO
-
 PRODUCT_PACKAGES += \
     audio.r_submix.default \
     audio.usb.default \
@@ -35,17 +34,16 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     FlipFlap
 
+### DISPLAY
+PRODUCT_PACKAGES += \
+    vendor.display.config@1.3
+
 ### GRAPHICS
 PRODUCT_PACKAGES += \
-    copybit.msm8998 \
     gralloc.msm8998 \
     hwcomposer.msm8998 \
     memtrack.msm8998 \
-    libdisplayconfig \
-    liboverlay
-
-PRODUCT_PACKAGES += \
-	android.hardware.graphics.mapper@3.0
+    libdisplayconfig
 
 ### IPACM
 PRODUCT_PACKAGES += \
@@ -53,10 +51,6 @@ PRODUCT_PACKAGES += \
     IPACM_cfg.xml \
     libipanat \
     liboffloadhal
-
-### XPERIAPARTS APK
-PRODUCT_PACKAGES += \
-    XperiaParts
 
 ### NFC
 PRODUCT_PACKAGES += \
@@ -73,9 +67,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libqti-perfd-client
 
-### REMOVE UNWANTED PACKAGES
+### SENSORS
 PRODUCT_PACKAGES += \
-    RemovePackages
+    libsensorndkbridge
 
 ### SERVICES
 # AUDIO
@@ -83,9 +77,7 @@ PRODUCT_PACKAGES += \
     android.hardware.audio@4.0-impl:32 \
     android.hardware.audio@2.0-service \
     android.hardware.audio.effect@4.0-impl:32 \
-    android.hardware.audio.effect@2.0-service \
-    android.hardware.soundtrigger@2.2-impl:32 \
-    android.hardware.soundtrigger@2.0-service:32
+    android.hardware.soundtrigger@2.2-impl:32
 
 # BLUETOOTH
 PRODUCT_PACKAGES += \
@@ -94,7 +86,6 @@ PRODUCT_PACKAGES += \
 
 # CAMERA
 PRODUCT_PACKAGES += \
-    android.hardware.camera.common@1.0-impl:32 \
     android.hardware.camera.provider@2.4 \
     android.hardware.camera.provider@2.4-impl:32 \
     camera.device@3.2-impl:32 \
@@ -135,7 +126,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.graphics.allocator@2.0-impl \
     android.hardware.graphics.allocator@2.0-service \
-    android.hardware.graphics.composer@2.1-impl \
     android.hardware.graphics.composer@2.1-service \
     android.hardware.graphics.mapper@2.0-impl-2.1
 
@@ -187,35 +177,10 @@ PRODUCT_PACKAGES += \
 
 # SENSORS
 PRODUCT_PACKAGES += \
-    libsensorndkbridge \
     android.frameworks.sensorservice@1.0 \
     android.frameworks.sensorservice@1.0.vendor \
     android.hardware.sensors@1.0-impl:64 \
     android.hardware.sensors@1.0-service
-
-# THERMAL
-PRODUCT_PACKAGES += \
-    thermal.msm8998
-
-# VR
-PRODUCT_PACKAGES += \
-    vr.msm8998 \
-    android.hardware.vr@1.0-impl:64 \
-    android.hardware.vr@1.0-service
-
-### WIFI
-PRODUCT_PACKAGES += \
-    hostapd \
-    libwpa_client \
-    p2p_supplicant.conf \
-    wificond \
-    WifiOverlay \
-    wpa_supplicant \
-    wpa_supplicant.conf
-
-### TETHERING
-PRODUCT_PACKAGES += \
-    TetheringConfigOverlay
 
 # USB
 PRODUCT_PACKAGES += \
@@ -232,18 +197,37 @@ PRODUCT_PACKAGES += \
     android.hardware.vibrator@1.0-impl:64 \
     android.hardware.vibrator@1.0-service
 
+# VR
+PRODUCT_PACKAGES += \
+    android.hardware.vr@1.0-impl:64 \
+    android.hardware.vr@1.0-service
+
 # WEAVER
 PRODUCT_PACKAGES += \
     android.hardware.weaver@1.0
 
 # WIFI
 PRODUCT_PACKAGES += \
-    android.hardware.wifi@1.0-impl \
-    android.hardware.wifi@1.1-impl \
     android.hardware.wifi@1.0-service \
     android.hardware.wifi.offload@1.0
 
-# WIFI DISPLAY
+### TETHERING
 PRODUCT_PACKAGES += \
-    vendor.display.config@1.9 \
-    vendor.display.config@1.9_vendor
+    TetheringConfigOverlay
+
+### VR
+PRODUCT_PACKAGES += \
+    vr.msm8998
+
+### WIFI
+PRODUCT_PACKAGES += \
+    hostapd \
+    libwpa_client \
+    wificond \
+    WifiOverlay \
+    wpa_supplicant \
+    wpa_supplicant.conf
+
+### XPERIAPARTS
+PRODUCT_PACKAGES += \
+    XperiaParts
